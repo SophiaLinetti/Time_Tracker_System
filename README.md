@@ -13,5 +13,5 @@ Ein webbasiertes System zur personen- und themenbezogenen Zeiterfassung. Ermögl
 - Deployment: Vercel
 - DB: Neon
 
-## Autor
-Sophia & Mustafa
+## Author
+Sophia Linetti
