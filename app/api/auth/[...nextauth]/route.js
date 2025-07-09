@@ -16,9 +16,20 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // fake-user (nur für demo)
-        if (credentials.username === "admin" && credentials.password === "admin") {
-          return { id: 1, name: "Admin" }
+        // Suche User anhand der Email (username-Feld)
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.username
+          }
+        });
+        // Wenn User gefunden & Passwort stimmt (Achtung: aktuell Klartext, später hashen!)
+        if (user && user.password === credentials.password) {
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+          };
         }
         return null;
       }
@@ -27,9 +38,28 @@ const handler = NextAuth({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
     }),
-    // Weitere Provider können hier hinzugefügt werden
+    // Weitere Provider hier ...
   ],
   session: { strategy: "jwt" },
+  callbacks: {
+    async jwt({ token, user }) {
+      // Wird beim Login/jwt-refresh aufgerufen
+      if (user) {
+        token.role = user.role;   // <-- Rolle für Berechtigungen
+        token.id = user.id;       // <-- User ID falls du sie brauchst
+                console.log("JWT Callback:", token.role);
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Wird immer beim Session-Zugriff aufgerufen
+      if (token) {
+        session.user.role = token.role; // <-- jetzt steht in session.user.role die Rolle!
+        session.user.id = token.id;
+      }
+      return session;
+    }
+  }
 });
 
 export { handler as GET, handler as POST };
