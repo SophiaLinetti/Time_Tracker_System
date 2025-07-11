@@ -6,7 +6,7 @@ import GitHubProvider from "next-auth/providers/github";
 
 const prisma = new PrismaClient();
 
-const handler = NextAuth({
+export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -45,8 +45,8 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       // Wird beim Login/jwt-refresh aufgerufen
       if (user) {
-        token.role = user.role;   // <-- Rolle für Berechtigungen
-        token.id = user.id;       // <-- User ID falls du sie brauchst
+        token.role = user.role;
+        token.id = user.id;       
                 console.log("JWT Callback:", token.role);
       }
       return token;
@@ -54,12 +54,14 @@ const handler = NextAuth({
     async session({ session, token }) {
       // Wird immer beim Session-Zugriff aufgerufen
       if (token) {
-        session.user.role = token.role; // <-- jetzt steht in session.user.role die Rolle!
+        session.user.role = token.role; 
         session.user.id = token.id;
       }
       return session;
     }
   }
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

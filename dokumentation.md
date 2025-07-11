@@ -38,6 +38,15 @@ Ziel ist die Entwicklung einer webbasierten Applikation, mit der Teammitglieder 
 - Frontend-Komponenten angepasst, Session-UI vereinfacht
 - Dokumentation erweitert
 
+### Mittwoch/ Donnerstag, 10.-11.07.2025
+- Prisma-Schema refaktoriert: Das alte Category-Modell entfernt, stattdessen Enum WorkLocation direkt in TimeEntry verwendet (HOME_OFFICE, REMOTE, BÜRO)
+- Migrationen durchgeführt, Datenbankstruktur erfolgreich angepasst
+- API-Route /api/timeentry angepasst: Erstellung neuer Zeiteinträge jetzt direkt mit location statt category, keine Referenzen mehr auf Category notwendig
+- Zahlreiche Fehler beim Speichern und Abrufen von Einträgen analysiert (Datenbankfehler, fehlende Felder, falsche Relations, Prisma-Validierungen)
+- Unterschiedliche Fehlerquellen rund um Authentifizierung und NextAuth/Session-Handling debuggt
+- Frontend: TimeEntryForm.js fortlaufend angepasst, fetch-Requests und Fehlerbehandlung verfeinert
+- Projekt weiter mit Git versioniert und Dokumentation jeweils aktuell gehalten
+
 ---
 
 ## Individueller Lernfortschritt
@@ -49,6 +58,11 @@ Ziel ist die Entwicklung einer webbasierten Applikation, mit der Teammitglieder 
 - erste Berührung mit Cloud Deployment (Vercel), Build-Prozesse und Umgebungsvariablen.
 - Dokumentation und Versionskontrolle in Git aktiv genutzt
 - weitere praktische Erfahrung mit Next.js und dem Aufbau einer modernen Webanwendung
+- Viele neue Erfahrungen im Bereich Fehleranalyse & Debugging gesammelt, auch wenn gefühlt mehr Zeit in der Fehlersuche als im Coden steckt
+- Erkannt, wie wichtig ein sauberer Umgang mit Umgebungsvariablen (.env) für Auth und DB ist
+- Anpassung von API-Routen auf neue Datenbankmodelle (z. B. Umstellung von Category auf location)
+- Erfahrung gesammelt mit Prisma Studio zum Testen und Debuggen von Datenbankeinträgen
+- Trotz einiger Frustmomente (Fehlermeldungen, Blockaden, fehlende Erfolge) nicht aufgegeben und systematisch Lösungen erarbeitet
 
 
 ## Probleme & Lösungen

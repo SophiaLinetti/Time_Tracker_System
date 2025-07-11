@@ -8,28 +8,44 @@ export default function TimeEntryForm() {
   const [started, setStarted] = useState(false);
   const [startTime, setStartTime] = useState("");
 
-  const handleStart = () => {
+  // KORREKTE async-Funktion!
+  const handleStart = async () => {
     if (!workLocation) {
       alert("Bitte Arbeitsort auswählen!");
       return;
     }
-    const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    setStartTime(now);
+    const now = new Date();
+    setStartTime(now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
     setStarted(true);
-    // Hier später: POST an API für Datenbank-Eintrag
-    console.log("Gestempelt:", { user: session?.user?.email, workLocation, startTime: now });
+
+    try {
+      const res = await fetch("/api/timeentry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          workLocation,
+          startTime: now.toISOString(),
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Fehler beim Speichern");
+      console.log("Zeiteintrag gespeichert:", data.entry);
+    } catch (err) {
+      alert("Fehler beim Speichern: " + err.message);
+      setStarted(false);
+    }
   };
 
   return (
     <div className="max-w-md mx-auto mt-12 p-6 bg-white shadow rounded-xl flex flex-col items-center">
       <h2 className="text-2xl font-bold mb-4">Bitte Zeiterfassung starten!</h2>
-
       {!started ? (
         <>
           <div className="mb-4 text-xl">
             <span className="font-mono">{new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span> Uhr
           </div>
-
           <div className="mb-6 w-full">
             <div className="flex gap-4">
               <label>
@@ -67,7 +83,6 @@ export default function TimeEntryForm() {
               </label>
             </div>
           </div>
-
           <button
             onClick={handleStart}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
